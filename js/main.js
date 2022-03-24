@@ -1,9 +1,10 @@
 'use strict'
 
-const sadFace = '🥵'
-const happyFace = '😀'
-const winFace = '🥳'
+const SADFACE = '🥵'
+const HAPPYFACE = '😀'
+const WINFACE = '🥳'
 const HEART = '❤️'
+const LIGHTBALL = '💡'
 
 document.addEventListener(
   'contextmenu',
@@ -25,6 +26,8 @@ var gGame = {
 var gFirstClick = {}
 var gIDCell = 0
 var timeNum
+var gHint = false
+var gHintsCounter = 3
 
 var gLevel = {
   SIZE: 4,
@@ -33,6 +36,9 @@ var gLevel = {
 
 var elH2Span = document.querySelector('h2 span')
 elH2Span.innerText = HEART + HEART + HEART
+
+var elLightsSpan = document.querySelector('.lights')
+elLightsSpan.innerText = LIGHTBALL + LIGHTBALL + LIGHTBALL
 
 var emptyCells = []
 var newEmptyCells = []
@@ -107,95 +113,103 @@ function renderBoard() {
 }
 
 function cellClicked(elCell, i, j, e) {
-  var cell = gBoard[i][j]
-  if (firstClick()) {
-    gFirstClick = { i: i, j: j }
-    var checkCellsCounter = 0
-    while (checkCellsCounter < emptyCells.length) {
-      if (
-        gFirstClick.i === emptyCells[checkCellsCounter].i &&
-        gFirstClick.j === emptyCells[checkCellsCounter].j
-      ) {
-        emptyCells.splice(checkCellsCounter, 1)
-        newEmptyCells = emptyCells.slice()
-      }
-      checkCellsCounter++
-    }
-    gGame.isOn = true
-    timeNum = 1
-    cell.isShown = true
-    startTimer()
-    setMines(gLevel.MINES, gBoard)
-    renderBoard(gBoard)
-  }
-  if (elCell.classList.contains('marked') && e.button === 0) {
+  if (gHint) {
+    hintStart(i, j)
+    setTimeout(hintTimeUp, 1000, i, j)
     return
-  }
-  switch (e.button) {
-    case 0:
+  } else {
+    var cell = gBoard[i][j]
+    if (firstClick()) {
+      gFirstClick = { i: i, j: j }
+      var checkCellsCounter = 0
+      while (checkCellsCounter < emptyCells.length) {
+        if (
+          gFirstClick.i === emptyCells[checkCellsCounter].i &&
+          gFirstClick.j === emptyCells[checkCellsCounter].j
+        ) {
+          emptyCells.splice(checkCellsCounter, 1)
+          newEmptyCells = emptyCells.slice()
+        }
+        checkCellsCounter++
+      }
+      gGame.isOn = true
+      timeNum = 1
       cell.isShown = true
-      if (cell.isMine) {
-        elCell.innerText = '💣'
-        gGame.points++
-        gGame.lifes--
-        switch (gGame.lifes) {
-          case 2:
-            elH2Span.innerText = HEART + HEART
-            break
-          case 1:
-            elH2Span.innerText = HEART
-            break
-          case 0:
-            elH2Span.innerText = '0'
-            break
-        }
-        if (gGame.lifes === 0) {
-          timeNum = 0
-          var elH1Span = document.querySelector('h1 span')
-          elH1Span.innerText = sadFace
-          var elModal = document.querySelector('.modal')
-          elModal.style.display = 'inline-block'
-          var elHeader = document.querySelector('.modal h1')
-          elHeader.innerText = 'YOU LOST'
-          var elBoard = document.querySelector('.board')
-          elBoard.style.display = 'none'
-        }
-      } else {
-        gGame.shownCount++
-        expandShown(i, j)
-        checkWin()
-      }
-      elCell.classList.add('cellone')
-      break
-    case 2:
-      if (cell.isMarked) {
-        cell.isMarked = false
-        elCell.classList.remove('marked')
-        if (cell.minesAroundCount === 0) {
-          elCell.innerText = ''
+      startTimer()
+      setMines(gLevel.MINES, gBoard)
+      renderBoard(gBoard)
+    }
+    if (elCell.classList.contains('marked') && e.button === 0) {
+      return
+    }
+    switch (e.button) {
+      case 0:
+        cell.isShown = true
+        if (cell.isMine) {
+          elCell.innerText = '💣'
+          gGame.points++
+          gGame.lifes--
+          switch (gGame.lifes) {
+            case 2:
+              elH2Span.innerText = HEART + HEART
+              break
+            case 1:
+              elH2Span.innerText = HEART
+              break
+            case 0:
+              elH2Span.innerText = '0'
+              break
+          }
+          if (gGame.lifes === 0) {
+            timeNum = 0
+            var elH1Span = document.querySelector('h1 span')
+            elH1Span.innerText = SADFACE
+            var elModal = document.querySelector('.modal')
+            elModal.style.display = 'inline-block'
+            var elHeader = document.querySelector('.modal h1')
+            elHeader.innerText = 'YOU LOST'
+            var elBoard = document.querySelector('.board')
+            elBoard.style.display = 'none'
+          } else {
+            checkWin()
+          }
         } else {
-          elCell.innerText = cell.minesAroundCount
+          gGame.shownCount++
+          expandShown(i, j)
+          checkWin()
         }
-      } else {
-        cell.isMarked = true
-        elCell.classList.add('marked')
-        elCell.innerText = ''
-      }
-      if (
-        elCell.classList.contains('marked') &&
-        elCell.classList.contains('mine')
-      ) {
-        gGame.points++
-        console.log(gGame.points)
-      }
-      if (
-        elCell.classList.contains('mine') &&
-        elCell.classList.contains('marked') === false
-      ) {
-        gGame.points--
-      }
-      checkWin()
-      break
+        elCell.classList.add('cellone')
+        break
+      case 2:
+        if (cell.isMarked) {
+          cell.isMarked = false
+          elCell.classList.remove('marked')
+          if (cell.minesAroundCount === 0) {
+            elCell.innerText = ''
+          } else {
+            elCell.innerText = cell.minesAroundCount
+          }
+        } else {
+          cell.isMarked = true
+          elCell.classList.add('marked')
+          elCell.innerText = ''
+        }
+        if (
+          elCell.classList.contains('marked') &&
+          elCell.classList.contains('mine')
+        ) {
+          gGame.points++
+          console.log(gGame.points)
+        }
+        if (
+          elCell.classList.contains('mine') &&
+          elCell.classList.contains('marked') === false
+        ) {
+          gGame.points--
+        }
+        checkWin()
+        break
+    }
   }
 }
 
@@ -203,7 +217,7 @@ function checkWin() {
   if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES) {
     if (gGame.points === gLevel.MINES) {
       var elH1Span = document.querySelector('h1 span')
-      elH1Span.innerText = winFace
+      elH1Span.innerText = WINFACE
       var elModal = document.querySelector('.modal')
       elModal.style.display = 'inline-block'
       var elBoard = document.querySelector('.board')
@@ -309,11 +323,13 @@ function resetGame() {
   emptyCells = []
   newEmptyCells = []
   gMines = []
+  gHintsCounter = 3
   var elH1Span = document.querySelector('h1 span')
-  elH1Span.innerText = happyFace
+  elH1Span.innerText = HAPPYFACE
   elH2Span.innerText = HEART + HEART + HEART
   var elH3Span = document.querySelector('h3 span')
   elH3Span.innerText = '0'
+  elLightsSpan = LIGHTBALL + LIGHTBALL + LIGHTBALL
   gBoard = createBoard()
   renderBoard()
 }

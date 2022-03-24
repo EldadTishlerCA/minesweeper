@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="items-container">
-      <div class="life-container"><h2>Lifes : <span>❤️❤️❤️</span></h2></div>
+      <div class="life-container"><h2>Lifes : <span></span></h2></div>
       <div class="face-container"><h1><span onclick="resetGame()" class="face-icon">😀</span></h1></div>
       <div class="timer-container"><h3>Timer : <span>0</span></h3></div>
       </div>
@@ -48,7 +48,14 @@
       <tbody class="board-cells"></tbody>
     </table>
 
+    <div class="bonus-container">
+      <div>
+        <h2 class="hints">Hints : <span onclick="clickedHint()" class="lights"></span></h2>
+      </div>
+    </div>
+
     <footer>&copy;Eldad Tishler - 2022</footer>
     <script src="js/main.js"></script>
+    <script src="js/bonus.js"></script>
   </body>
 </html>

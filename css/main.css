@@ -101,6 +101,17 @@ label {
   color: #ffbf69;
 }
 
+.showCell {
+  width: 60px;
+  height: 60px;
+  border: 3px solid #1d1c1b;
+  background-color: #252422;
+  color: #fffcf2;
+  font-weight: 700;
+  font-size: 32px;
+  pointer-events: none;
+}
+
 .cellone {
   width: 60px;
   height: 60px;
@@ -109,7 +120,6 @@ label {
   color: #fffcf2;
   font-weight: 700;
   font-size: 32px;
-  cursor: pointer;
   pointer-events: none;
 }
 
@@ -145,6 +155,7 @@ footer {
 .modal h1 {
   letter-spacing: 5px;
   font-size: 60px;
+  margin-bottom: 20px;
 }
 
 .modal button {
@@ -160,4 +171,12 @@ footer {
 .modal button:hover {
   background-color: #ffbf69;
   color: #fffcf2;
+}
+
+.hints {
+  margin-top: 20px;
+}
+
+.lights {
+  cursor: pointer;
 }
