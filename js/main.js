@@ -28,6 +28,7 @@ var gIDCell = 0
 var timeNum
 var gHint = false
 var gHintsCounter = 3
+var gSafeClick = 3
 
 var gLevel = {
   SIZE: 4,
@@ -324,12 +325,15 @@ function resetGame() {
   newEmptyCells = []
   gMines = []
   gHintsCounter = 3
+  gSafeClick = 3
   var elH1Span = document.querySelector('h1 span')
   elH1Span.innerText = HAPPYFACE
   elH2Span.innerText = HEART + HEART + HEART
   var elH3Span = document.querySelector('h3 span')
   elH3Span.innerText = '0'
   elLightsSpan = LIGHTBALL + LIGHTBALL + LIGHTBALL
+  var elSafeClicks = document.querySelector('.safeclicks')
+  elSafeClicks.innerText = gSafeClick
   gBoard = createBoard()
   renderBoard()
 }

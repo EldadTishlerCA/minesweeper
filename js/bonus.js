@@ -20,7 +20,6 @@ function clickedHint() {
     }
   } else {
     alert('Please click one cell before hints')
-    return
   }
 }
 
@@ -51,4 +50,28 @@ function hintTimeUp(i, j) {
     }
   }
   gHint = false
+}
+
+function safeCell() {
+  if (gGame.isOn) {
+    if (gSafeClick !== 0) {
+      var getEmpty = Math.floor(Math.random() * newEmptyCells.length)
+      var getCell = newEmptyCells[getEmpty]
+      var ElNewCell = document.querySelector(
+        `[data-i="${getCell.i}"][data-j="${getCell.j}"]`
+      )
+      if (ElNewCell.classList.contains('cellone')) {
+        safeCell()
+      } else {
+        ElNewCell.classList.add('cell-empty')
+        gSafeClick--
+        var elSafeClicks = document.querySelector('.safeclicks')
+        elSafeClicks.innerText = gSafeClick
+      }
+    } else {
+      alert('No more safe clicks')
+    }
+  } else {
+    alert('Please click one cell before safe clicks')
+  }
 }

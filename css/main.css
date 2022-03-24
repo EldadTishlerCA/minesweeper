@@ -101,6 +101,11 @@ label {
   color: #ffbf69;
 }
 
+.cell-empty {
+  background-color: rgb(82, 82, 151);
+  color: rgb(82, 82, 151);
+}
+
 .showCell {
   width: 60px;
   height: 60px;
@@ -178,5 +183,15 @@ footer {
 }
 
 .lights {
+  cursor: pointer;
+}
+
+.btn-safe {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding: 20px 15px;
+  border: 2px solid #ccc;
+  border-radius: 10%;
+  background-color: rgb(73, 176, 245);
   cursor: pointer;
 }
