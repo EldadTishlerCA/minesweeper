@@ -1,0 +1,44 @@
+body {
+  background: #111;
+  text-align: center;
+  color: palegoldenrod;
+}
+
+.board {
+  padding-top: 60px;
+  margin: auto;
+  text-align: center;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  border: 1px solid gray;
+  background-color: gray;
+  color: gray;
+  font-weight: 700;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+.cell:hover {
+  background-color: rgb(165, 44, 44);
+  color: rgb(165, 44, 44);
+}
+
+.mine {
+  background-image: url('bomb.png');
+}
+
+.marked {
+  background: url('flag.svg');
+  background-size: 60px 60px;
+}
+
+.noClick {
+  pointer-events: none;
+}
+
+h1 span {
+  cursor: pointer;
+}

@@ -1,0 +1,45 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mine Project</title>
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <h1><span onclick="resetGame()">😀</span></h1>
+    <h2>Lifes: <span>3</span></h2>
+    <h3>Timer: <span>0</span></h3>
+    <div>
+      <input
+        type="radio"
+        id="4"
+        name="boardSize"
+        value="2"
+        checked="checked"
+        onclick="clickedRadio(this)"
+      />
+      <label for="4">Beginner</label>
+      <input
+        type="radio"
+        id="8"
+        name="boardSize"
+        value="12"
+        onclick="clickedRadio(this)"
+      />
+      <label for="8">Medium</label>
+      <input
+        type="radio"
+        id="12"
+        name="boardSize"
+        value="30"
+        onclick="clickedRadio(this)"
+      />
+      <label for="12">Expert</label>
+    </div>
+    <table class="board">
+      <tbody class="board-cells"></tbody>
+    </table>
+    <script src="js/main.js"></script>
+  </body>
+</html>
