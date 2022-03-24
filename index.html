@@ -7,10 +7,13 @@
     <link rel="stylesheet" href="css/main.css" />
   </head>
   <body>
-    <h1><span onclick="resetGame()">😀</span></h1>
-    <h2>Lifes: <span>3</span></h2>
-    <h3>Timer: <span>0</span></h3>
-    <div>
+    <div class="items-container">
+      <div class="life-container"><h2>Lifes : <span>❤️❤️❤️</span></h2></div>
+      <div class="face-container"><h1><span onclick="resetGame()" class="face-icon">😀</span></h1></div>
+      <div class="timer-container"><h3>Timer : <span>0</span></h3></div>
+      </div>
+    </div>
+    <div class="inputs-container">
       <input
         type="radio"
         id="4"
@@ -36,6 +39,10 @@
         onclick="clickedRadio(this)"
       />
       <label for="12">Expert</label>
+    </div>
+    <div class="modal">
+      <h1>YOU WON</h1>
+      <button onclick="resetGame()">Restart</button>
     </div>
     <table class="board">
       <tbody class="board-cells"></tbody>

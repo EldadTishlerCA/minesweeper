@@ -3,6 +3,7 @@
 const sadFace = '🥵'
 const happyFace = '😀'
 const winFace = '🥳'
+const HEART = '❤️'
 
 document.addEventListener(
   'contextmenu',
@@ -30,6 +31,9 @@ var gLevel = {
   MINES: 2,
 }
 
+var elH2Span = document.querySelector('h2 span')
+elH2Span.innerText = HEART + HEART + HEART
+
 var emptyCells = []
 var newEmptyCells = []
 var gMines = []
@@ -38,8 +42,8 @@ var gBoard = createBoard()
 renderBoard()
 
 function clickedRadio(elRadio) {
-  gLevel.SIZE = elRadio.id
-  gLevel.MINES = elRadio.value
+  gLevel.SIZE = Number(elRadio.id)
+  gLevel.MINES = Number(elRadio.value)
   gBoard = null
   resetGame()
   gBoard = createBoard()
@@ -79,13 +83,21 @@ function renderBoard() {
         cell.minesAroundCount = ''
       }
       if (cell.isShown) {
-        strHTML += `\t<td data-i="${i}" data-j="${j}" class="cellone" id="${gIDCell++}" onmousedown="cellClicked(this, ${i}, ${j}, event)" >${
-          cell.minesAroundCount
-        }</td>\n`
+        if (cell.minesAroundCount !== 0) {
+          strHTML += `\t<td data-i="${i}" data-j="${j}" class="cellone" id="${gIDCell++}" onmousedown="cellClicked(this, ${i}, ${j}, event)" >${
+            cell.minesAroundCount
+          }</td>\n`
+        } else {
+          strHTML += `\t<td data-i="${i}" data-j="${j}" class="cellone" id="${gIDCell++}" onmousedown="cellClicked(this, ${i}, ${j}, event)" ></td>\n`
+        }
       } else {
-        strHTML += `\t<td data-i="${i}" data-j="${j}" class="${className}" id="${gIDCell++}" onmousedown="cellClicked(this, ${i}, ${j}, event)" >${
-          cell.minesAroundCount
-        }</td>\n`
+        if (cell.minesAroundCount === 0) {
+          strHTML += `\t<td data-i="${i}" data-j="${j}" class="${className}" id="${gIDCell++}" onmousedown="cellClicked(this, ${i}, ${j}, event)" ></td>\n`
+        } else {
+          strHTML += `\t<td data-i="${i}" data-j="${j}" class="${className}" id="${gIDCell++}" onmousedown="cellClicked(this, ${i}, ${j}, event)" >${
+            cell.minesAroundCount
+          }</td>\n`
+        }
       }
     }
     strHTML += `</tr\n`
@@ -124,18 +136,31 @@ function cellClicked(elCell, i, j, e) {
       cell.isShown = true
       if (cell.isMine) {
         elCell.innerText = '💣'
-        gGame.lifes--
         gGame.points++
-        console.log(gGame.points)
-        var elH2Span = document.querySelector('h2 span')
-        elH2Span.innerText = gGame.lifes
+        gGame.lifes--
+        switch (gGame.lifes) {
+          case 2:
+            elH2Span.innerText = HEART + HEART
+            break
+          case 1:
+            elH2Span.innerText = HEART
+            break
+          case 0:
+            elH2Span.innerText = '0'
+            break
+        }
         if (gGame.lifes === 0) {
+          timeNum = 0
           var elH1Span = document.querySelector('h1 span')
           elH1Span.innerText = sadFace
-          // need to add modal button for reset
+          var elModal = document.querySelector('.modal')
+          elModal.style.display = 'inline-block'
+          var elHeader = document.querySelector('.modal h1')
+          elHeader.innerText = 'YOU LOST'
+          var elBoard = document.querySelector('.board')
+          elBoard.style.display = 'none'
         }
       } else {
-        elCell.innerText = cell.minesAroundCount
         gGame.shownCount++
         expandShown(i, j)
         checkWin()
@@ -143,7 +168,19 @@ function cellClicked(elCell, i, j, e) {
       elCell.classList.add('cellone')
       break
     case 2:
-      elCell.classList.toggle('marked')
+      if (cell.isMarked) {
+        cell.isMarked = false
+        elCell.classList.remove('marked')
+        if (cell.minesAroundCount === 0) {
+          elCell.innerText = ''
+        } else {
+          elCell.innerText = cell.minesAroundCount
+        }
+      } else {
+        cell.isMarked = true
+        elCell.classList.add('marked')
+        elCell.innerText = ''
+      }
       if (
         elCell.classList.contains('marked') &&
         elCell.classList.contains('mine')
@@ -157,19 +194,28 @@ function cellClicked(elCell, i, j, e) {
       ) {
         gGame.points--
       }
-      elCell.innerText = ''
       checkWin()
       break
   }
 }
 
-function checkWin(cell) {
-  if (
-    gGame.points === gLevel.MINES &&
-    gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES
-  ) {
-    console.log('you win!')
-    timeNum = 0
+function checkWin() {
+  if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES) {
+    if (gGame.points === gLevel.MINES) {
+      var elH1Span = document.querySelector('h1 span')
+      elH1Span.innerText = winFace
+      var elModal = document.querySelector('.modal')
+      elModal.style.display = 'inline-block'
+      var elBoard = document.querySelector('.board')
+      elBoard.style.display = 'none'
+      var elHeader = document.querySelector('.modal h1')
+      elHeader.innerText = 'YOU WON'
+      timeNum = 0
+    } else {
+      return
+    }
+  } else {
+    return
   }
 }
 
@@ -223,18 +269,21 @@ function firstClick() {
 function expandShown(i, j) {
   if (gBoard[i][j].minesAroundCount === 0) {
     for (var a = i - 1; a <= i + 1; a++) {
-      if (a < 0 || a === gLevel.SIZE) continue
+      if (a < 0 || a >= gLevel.SIZE) continue
       for (var b = j - 1; b <= j + 1; b++) {
         if (a === i && b === j) continue
-        if (b < 0 || b === gLevel.SIZE) continue
+        if (b < 0 || b >= gLevel.SIZE) continue
         if (gBoard[a][b].isMine) continue
         if (gBoard[a][b].isShown) continue
+        if (gBoard[a][b].isMarked) continue
         if (gBoard[a][b].isShown === false && gBoard[a][b].isMine === false) {
           gGame.shownCount++
+          var ElNewCell = document.querySelector(
+            `[data-i="${a}"][data-j="${b}"]`
+          )
+          ElNewCell.classList.add('cellone')
+          gBoard[a][b].isShown = true
         }
-        var ElNewCell = document.querySelector(`[data-i="${a}"][data-j="${b}"]`)
-        ElNewCell.classList.add('cellone')
-        gBoard[a][b].isShown = true
         if (gBoard[a][b].minesAroundCount === 0) {
           expandShown(a, b)
         }
@@ -244,6 +293,10 @@ function expandShown(i, j) {
 }
 
 function resetGame() {
+  var elBoard = document.querySelector('.board')
+  elBoard.style.display = 'inline-block'
+  var elModal = document.querySelector('.modal')
+  elModal.style.display = 'none'
   gGame = {
     isOn: false,
     shownCount: 0,
@@ -258,9 +311,9 @@ function resetGame() {
   gMines = []
   var elH1Span = document.querySelector('h1 span')
   elH1Span.innerText = happyFace
-  var elH2Span = document.querySelector('h2 span')
-  elH2Span.innerText = 3
-
+  elH2Span.innerText = HEART + HEART + HEART
+  var elH3Span = document.querySelector('h3 span')
+  elH3Span.innerText = '0'
   gBoard = createBoard()
   renderBoard()
 }
