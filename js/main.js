@@ -40,6 +40,7 @@ renderBoard()
 function clickedRadio(elRadio) {
   gLevel.SIZE = elRadio.id
   gLevel.MINES = elRadio.value
+  gBoard = null
   resetGame()
   gBoard = createBoard()
   renderBoard()
@@ -77,21 +78,26 @@ function renderBoard() {
         className += ' mine'
         cell.minesAroundCount = ''
       }
-      strHTML += `\t<td data-i="${i}" data-j="${j}" class="${className}" id="${gIDCell++}" onmousedown="cellClicked(this, ${i}, ${j}, event)" >${
-        cell.minesAroundCount
-      }</td>\n`
+      if (cell.isShown) {
+        strHTML += `\t<td data-i="${i}" data-j="${j}" class="cellone" id="${gIDCell++}" onmousedown="cellClicked(this, ${i}, ${j}, event)" >${
+          cell.minesAroundCount
+        }</td>\n`
+      } else {
+        strHTML += `\t<td data-i="${i}" data-j="${j}" class="${className}" id="${gIDCell++}" onmousedown="cellClicked(this, ${i}, ${j}, event)" >${
+          cell.minesAroundCount
+        }</td>\n`
+      }
     }
     strHTML += `</tr\n`
   }
-
   var elCells = document.querySelector('.board-cells')
   elCells.innerHTML = strHTML
 }
 
 function cellClicked(elCell, i, j, e) {
+  var cell = gBoard[i][j]
   if (firstClick()) {
     gFirstClick = { i: i, j: j }
-    console.log(gFirstClick)
     var checkCellsCounter = 0
     while (checkCellsCounter < emptyCells.length) {
       if (
@@ -105,15 +111,11 @@ function cellClicked(elCell, i, j, e) {
     }
     gGame.isOn = true
     timeNum = 1
+    cell.isShown = true
     startTimer()
     setMines(gLevel.MINES, gBoard)
-    gGame.shownCount++
-    var firstNum = setMinesNegsCount(gBoard, i, j)
-    elCell.innerHTML = firstNum
-    expandShown(i, j)
     renderBoard(gBoard)
   }
-  var cell = gBoard[i][j]
   if (elCell.classList.contains('marked') && e.button === 0) {
     return
   }
@@ -123,6 +125,8 @@ function cellClicked(elCell, i, j, e) {
       if (cell.isMine) {
         elCell.innerText = '💣'
         gGame.lifes--
+        gGame.points++
+        console.log(gGame.points)
         var elH2Span = document.querySelector('h2 span')
         elH2Span.innerText = gGame.lifes
         if (gGame.lifes === 0) {
@@ -134,38 +138,38 @@ function cellClicked(elCell, i, j, e) {
         elCell.innerText = cell.minesAroundCount
         gGame.shownCount++
         expandShown(i, j)
+        checkWin()
       }
-      if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES) {
-        checkWin(elCell)
-      }
-      elCell.style.color = 'white'
-      elCell.classList.add('noClick')
+      elCell.classList.add('cellone')
       break
     case 2:
       elCell.classList.toggle('marked')
+      if (
+        elCell.classList.contains('marked') &&
+        elCell.classList.contains('mine')
+      ) {
+        gGame.points++
+        console.log(gGame.points)
+      }
+      if (
+        elCell.classList.contains('mine') &&
+        elCell.classList.contains('marked') === false
+      ) {
+        gGame.points--
+      }
       elCell.innerText = ''
-      checkWin(elCell)
+      checkWin()
       break
   }
 }
 
 function checkWin(cell) {
-  if (cell.classList.contains('marked') && cell.classList.contains('mine')) {
-    gGame.points++
-    console.log(gGame.points)
-  }
-  if (
-    cell.classList.contains('mine') &&
-    cell.classList.contains('marked') === false
-  ) {
-    gGame.points--
-    console.log(gGame.points)
-  }
   if (
     gGame.points === gLevel.MINES &&
     gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES
   ) {
     console.log('you win!')
+    timeNum = 0
   }
 }
 
@@ -224,10 +228,16 @@ function expandShown(i, j) {
         if (a === i && b === j) continue
         if (b < 0 || b === gLevel.SIZE) continue
         if (gBoard[a][b].isMine) continue
-        console.log(a, b)
+        if (gBoard[a][b].isShown) continue
+        if (gBoard[a][b].isShown === false && gBoard[a][b].isMine === false) {
+          gGame.shownCount++
+        }
         var ElNewCell = document.querySelector(`[data-i="${a}"][data-j="${b}"]`)
-        ElNewCell.style.color = 'white'
-        ElNewCell.classList.add('noClick')
+        ElNewCell.classList.add('cellone')
+        gBoard[a][b].isShown = true
+        if (gBoard[a][b].minesAroundCount === 0) {
+          expandShown(a, b)
+        }
       }
     }
   }

@@ -26,6 +26,18 @@ body {
   color: rgb(165, 44, 44);
 }
 
+.cellone {
+  width: 60px;
+  height: 60px;
+  border: 1px solid gray;
+  background-color: gray;
+  color: white;
+  font-weight: 700;
+  font-size: 40px;
+  cursor: pointer;
+  pointer-events: none;
+}
+
 .mine {
   background-image: url('bomb.png');
 }
@@ -33,10 +45,6 @@ body {
 .marked {
   background: url('flag.svg');
   background-size: 60px 60px;
-}
-
-.noClick {
-  pointer-events: none;
 }
 
 h1 span {
