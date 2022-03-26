@@ -5,6 +5,13 @@ const HAPPYFACE = '😀'
 const WINFACE = '🥳'
 const HEART = '❤️'
 const LIGHTBALL = '💡'
+const WINMUSIC = new Audio('wingame.wav')
+const LOSEMUSIC = new Audio('losegame.wav')
+const RCLICKMUSIC = new Audio('rightclickpop.wav')
+const BOMBCLICKMUSIC = new Audio('rightclickbomb.wav')
+const HINTCLICKMUSIC = new Audio('rightclickhint.wav')
+const SHOWCLICKMUSIC = new Audio('rightclickshow.wav')
+const LCLICKMUSIC = new Audio('leftclickflag.wav')
 
 document.addEventListener(
   'contextmenu',
@@ -119,6 +126,7 @@ function renderBoard() {
 
 function cellClicked(elCell, i, j, e) {
   if (gHint) {
+    HINTCLICKMUSIC.play()
     hintStart(i, j)
     setTimeout(hintTimeUp, 1000, i, j)
     return
@@ -157,9 +165,11 @@ function cellClicked(elCell, i, j, e) {
           switch (gGame.lifes) {
             case 2:
               elSpanLifes.innerText = HEART + HEART
+              BOMBCLICKMUSIC.play()
               break
             case 1:
               elSpanLifes.innerText = HEART
+              BOMBCLICKMUSIC.play()
               break
             case 0:
               elSpanLifes.innerText = '0'
@@ -172,10 +182,12 @@ function cellClicked(elCell, i, j, e) {
             var elHeader = document.querySelector('.modal h1')
             elHeader.innerText = 'YOU LOST'
             elBoard.style.display = 'none'
+            LOSEMUSIC.play()
           } else {
             checkWin()
           }
         } else {
+          RCLICKMUSIC.play()
           gGame.shownCount++
           expandShown(i, j)
           checkWin()
@@ -183,6 +195,7 @@ function cellClicked(elCell, i, j, e) {
         elCell.classList.add('cellone')
         break
       case 2:
+        LCLICKMUSIC.play()
         if (cell.isMarked) {
           cell.isMarked = false
           elCell.classList.remove('marked')
@@ -224,6 +237,7 @@ function checkWin() {
       var elHeader = document.querySelector('.modal h1')
       elHeader.innerText = 'YOU WON'
       timeNum = 0
+      WINMUSIC.play()
     } else {
       return
     }

@@ -2,23 +2,27 @@
 
 function clickedHint() {
   if (gGame.isOn) {
-    if (gHintsCounter !== 0) {
-      gHint = true
-      gHintsCounter--
-      console.log(gHintsCounter)
-      switch (gHintsCounter) {
-        case 2:
-          elSpanLights.innerText = LIGHTBALL + LIGHTBALL
-          break
-        case 1:
-          elSpanLights.innerText = LIGHTBALL
-          break
-        case 0:
-          elSpanLights.innerText = '0'
-          break
+    if (gHint === false) {
+      if (gHintsCounter !== 0) {
+        gHint = true
+        gHintsCounter--
+        console.log(gHintsCounter)
+        switch (gHintsCounter) {
+          case 2:
+            elSpanLights.innerText = LIGHTBALL + LIGHTBALL
+            break
+          case 1:
+            elSpanLights.innerText = LIGHTBALL
+            break
+          case 0:
+            elSpanLights.innerText = '0'
+            break
+        }
+      } else {
+        alert('No hints left..')
       }
     } else {
-      alert('No hints left..')
+      alert('Please use hint before another one')
     }
   } else {
     alert('Please click one cell before hints')
@@ -68,6 +72,7 @@ function safeCell() {
       ) {
         safeCell()
       } else {
+        SHOWCLICKMUSIC.play()
         ElNewCell.classList.add('cell-empty')
         gSafeClick--
         newEmptyCells.splice(getEmpty, 1)
