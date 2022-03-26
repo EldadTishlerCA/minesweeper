@@ -15,13 +15,13 @@ const LCLICKMUSIC = new Audio('leftclickflag.wav')
 var IDKey = 0
 
 // -------ADD / REMOVE RIGHT CLICK MENU
-// document.addEventListener(
-//   'contextmenu',
-//   function (e) {
-//     e.preventDefault()
-//   },
-//   false
-// )
+document.addEventListener(
+  'contextmenu',
+  function (e) {
+    e.preventDefault()
+  },
+  false
+)
 
 // -------Clear the localStorage-------
 // localStorage.clear()
@@ -178,6 +178,9 @@ function renderBestPlayers(length) {
           '.lsmode4'
         ).innerText += `5. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
         usersArr.shift()
+        for (var m = 0; m <= usersArr.length; m++) {
+          usersArr.shift()
+        }
       } else if (usersArr.length === 4) {
         document.querySelector(
           '.lsmode4'
@@ -261,6 +264,9 @@ function renderBestPlayers(length) {
           '.lsmode8'
         ).innerText += `5. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
         usersArr.shift()
+        for (var m = 0; m <= usersArr.length; m++) {
+          usersArr.shift()
+        }
       } else if (usersArr.length === 4) {
         document.querySelector(
           '.lsmode8'
@@ -344,6 +350,9 @@ function renderBestPlayers(length) {
           '.lsmode12'
         ).innerText += `5. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
         usersArr.shift()
+        for (var m = 0; m <= usersArr.length; m++) {
+          usersArr.shift()
+        }
       } else if (usersArr.length === 4) {
         document.querySelector(
           '.lsmode12'
@@ -511,8 +520,12 @@ function checkWin() {
       elHeader.innerText = 'YOU WON'
       timeNum = 0
       WINMUSIC.play()
+      for (var k = 0; k < localStorage.length + 1; k++) {
+        console.log(k)
+        IDKey = k
+      }
       window.localStorage.setItem(
-        IDKey++,
+        IDKey,
         JSON.stringify({
           name: gUserName,
           score: gGame.secsPasses,

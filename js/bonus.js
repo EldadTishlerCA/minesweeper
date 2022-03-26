@@ -1,11 +1,14 @@
 'use strict'
 
+var elHintsP = document.querySelector('.hints-p')
+
 function clickedHint() {
   if (gGame.isOn) {
     if (gHint === false) {
       if (gHintsCounter !== 0) {
         gHint = true
         gHintsCounter--
+        elHintsP.innerText = 'Hints is on - Please chose cell to show'
         console.log(gHintsCounter)
         switch (gHintsCounter) {
           case 2:
@@ -18,14 +21,10 @@ function clickedHint() {
             elSpanLights.innerText = '0'
             break
         }
-      } else {
-        alert('No hints left..')
       }
-    } else {
-      alert('Please use hint before another one')
     }
   } else {
-    alert('Please click one cell before hints')
+    elHintsP.innerText = 'Hints is off - Please click first cell'
   }
 }
 
@@ -54,6 +53,17 @@ function hintTimeUp(i, j) {
       }
       ElNewCell.classList.remove('showCell')
     }
+  }
+  switch (gHintsCounter) {
+    case 2:
+      elHintsP.innerText = 'Hints is off - For hint click lightball'
+      break
+    case 1:
+      elHintsP.innerText = 'Hints is off - For hint click lightball'
+      break
+    case 0:
+      elHintsP.innerText = 'Hints is off - No hints left'
+      break
   }
   gHint = false
 }
