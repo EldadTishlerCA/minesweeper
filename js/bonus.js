@@ -1,3 +1,5 @@
+'use strict'
+
 function clickedHint() {
   if (gGame.isOn) {
     if (gHintsCounter !== 0) {
@@ -6,13 +8,13 @@ function clickedHint() {
       console.log(gHintsCounter)
       switch (gHintsCounter) {
         case 2:
-          elLightsSpan.innerText = LIGHTBALL + LIGHTBALL
+          elSpanLights.innerText = LIGHTBALL + LIGHTBALL
           break
         case 1:
-          elLightsSpan.innerText = LIGHTBALL
+          elSpanLights.innerText = LIGHTBALL
           break
         case 0:
-          elLightsSpan.innerText = '0'
+          elSpanLights.innerText = '0'
           break
       }
     } else {
@@ -60,12 +62,15 @@ function safeCell() {
       var ElNewCell = document.querySelector(
         `[data-i="${getCell.i}"][data-j="${getCell.j}"]`
       )
-      if (ElNewCell.classList.contains('cellone')) {
+      if (
+        ElNewCell.classList.contains('cellone') ||
+        ElNewCell.classList.contains('mine')
+      ) {
         safeCell()
       } else {
         ElNewCell.classList.add('cell-empty')
         gSafeClick--
-        var elSafeClicks = document.querySelector('.safeclicks')
+        newEmptyCells.splice(getEmpty, 1)
         elSafeClicks.innerText = gSafeClick
       }
     } else {

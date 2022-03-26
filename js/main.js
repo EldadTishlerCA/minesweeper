@@ -35,11 +35,18 @@ var gLevel = {
   MINES: 2,
 }
 
-var elH2Span = document.querySelector('h2 span')
-elH2Span.innerText = HEART + HEART + HEART
+var elModal = document.querySelector('.modal')
+var elBoard = document.querySelector('.board')
+var elSpanFace = document.querySelector('.face-icon')
 
-var elLightsSpan = document.querySelector('.lights')
-elLightsSpan.innerText = LIGHTBALL + LIGHTBALL + LIGHTBALL
+var elSpanLifes = document.querySelector('.lifes-icon')
+elSpanLifes.innerText = HEART + HEART + HEART
+
+var elSpanLights = document.querySelector('.lights')
+elSpanLights.innerText = LIGHTBALL + LIGHTBALL + LIGHTBALL
+
+var elSafeClicks = document.querySelector('.safeclicks')
+elSafeClicks.innerText = gSafeClick
 
 var emptyCells = []
 var newEmptyCells = []
@@ -53,8 +60,6 @@ function clickedRadio(elRadio) {
   gLevel.MINES = Number(elRadio.value)
   gBoard = null
   resetGame()
-  gBoard = createBoard()
-  renderBoard()
 }
 
 function createBoard() {
@@ -81,7 +86,6 @@ function renderBoard() {
   for (var i = 0; i < gBoard.length; i++) {
     strHTML += `<tr class="board-row" >\n`
     for (var j = 0; j < gBoard[0].length; j++) {
-      // if (gFirstClick.i === i && gFirstClick.j === j)
       var cell = gBoard[i][j]
       var className = 'cell'
       cell.minesAroundCount = setMinesNegsCount(gBoard, i, j)
@@ -152,24 +156,21 @@ function cellClicked(elCell, i, j, e) {
           gGame.lifes--
           switch (gGame.lifes) {
             case 2:
-              elH2Span.innerText = HEART + HEART
+              elSpanLifes.innerText = HEART + HEART
               break
             case 1:
-              elH2Span.innerText = HEART
+              elSpanLifes.innerText = HEART
               break
             case 0:
-              elH2Span.innerText = '0'
+              elSpanLifes.innerText = '0'
               break
           }
           if (gGame.lifes === 0) {
             timeNum = 0
-            var elH1Span = document.querySelector('h1 span')
-            elH1Span.innerText = SADFACE
-            var elModal = document.querySelector('.modal')
+            elSpanFace.innerText = SADFACE
             elModal.style.display = 'inline-block'
             var elHeader = document.querySelector('.modal h1')
             elHeader.innerText = 'YOU LOST'
-            var elBoard = document.querySelector('.board')
             elBoard.style.display = 'none'
           } else {
             checkWin()
@@ -217,11 +218,8 @@ function cellClicked(elCell, i, j, e) {
 function checkWin() {
   if (gGame.shownCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES) {
     if (gGame.points === gLevel.MINES) {
-      var elH1Span = document.querySelector('h1 span')
-      elH1Span.innerText = WINFACE
-      var elModal = document.querySelector('.modal')
+      elSpanFace.innerText = WINFACE
       elModal.style.display = 'inline-block'
-      var elBoard = document.querySelector('.board')
       elBoard.style.display = 'none'
       var elHeader = document.querySelector('.modal h1')
       elHeader.innerText = 'YOU WON'
@@ -256,31 +254,6 @@ function setMinesNegsCount(board, checkI, checkJ) {
   return counter
 }
 
-function startTimer() {
-  var elTimer = document.querySelector('h3 span')
-  elTimer.innerText = gGame.secsPasses
-  if (timeNum === 1) {
-    gGame.secsPasses = gGame.secsPasses + 1
-    setTimeout(startTimer, 1000)
-  } else {
-    elTimer.innerText = gGame.secsPasses
-  }
-}
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor((max - min + 1) * Math.random() + min)
-}
-
-function firstClick() {
-  if (gGame.isOn) {
-    return false
-  } else {
-    return true
-  }
-}
-
 function expandShown(i, j) {
   if (gBoard[i][j].minesAroundCount === 0) {
     for (var a = i - 1; a <= i + 1; a++) {
@@ -308,9 +281,7 @@ function expandShown(i, j) {
 }
 
 function resetGame() {
-  var elBoard = document.querySelector('.board')
   elBoard.style.display = 'inline-block'
-  var elModal = document.querySelector('.modal')
   elModal.style.display = 'none'
   gGame = {
     isOn: false,
@@ -320,19 +291,18 @@ function resetGame() {
     points: 0,
     lifes: 3,
   }
+  gFirstClick.length = 0
   timeNum = 0
-  emptyCells = []
-  newEmptyCells = []
+  emptyCells.length = 0
+  newEmptyCells.length = 0
   gMines = []
   gHintsCounter = 3
   gSafeClick = 3
-  var elH1Span = document.querySelector('h1 span')
-  elH1Span.innerText = HAPPYFACE
-  elH2Span.innerText = HEART + HEART + HEART
+  elSpanFace.innerText = HAPPYFACE
+  elSpanLifes.innerText = HEART + HEART + HEART
   var elH3Span = document.querySelector('h3 span')
   elH3Span.innerText = '0'
-  elLightsSpan = LIGHTBALL + LIGHTBALL + LIGHTBALL
-  var elSafeClicks = document.querySelector('.safeclicks')
+  elSpanLights.innerText = LIGHTBALL + LIGHTBALL + LIGHTBALL
   elSafeClicks.innerText = gSafeClick
   gBoard = createBoard()
   renderBoard()

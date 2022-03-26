@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="items-container">
-      <div class="life-container"><h2>Lifes : <span></span></h2></div>
+      <div class="life-container"><h2>Lifes : <span class="lifes-icon"></span></h2></div>
       <div class="face-container"><h1><span onclick="resetGame()" class="face-icon">😀</span></h1></div>
       <div class="timer-container"><h3>Timer : <span>0</span></h3></div>
       </div>
@@ -54,11 +54,12 @@
       </div>
       <div>
         <button class="btn-safe" onclick="safeCell()">Safe Click</button>
-        <p><span class="safeclicks">3</span> Clicks Available</p>
+        <p><span class="safeclicks"></span> Clicks Available</p>
       </div>
     </div>
 
     <footer>&copy;Eldad Tishler - 2022</footer>
+    <script src="js/utils.js"></script>
     <script src="js/main.js"></script>
     <script src="js/bonus.js"></script>
   </body>
