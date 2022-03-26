@@ -12,14 +12,19 @@ const BOMBCLICKMUSIC = new Audio('rightclickbomb.wav')
 const HINTCLICKMUSIC = new Audio('rightclickhint.wav')
 const SHOWCLICKMUSIC = new Audio('rightclickshow.wav')
 const LCLICKMUSIC = new Audio('leftclickflag.wav')
+var IDKey = 0
 
-document.addEventListener(
-  'contextmenu',
-  function (e) {
-    e.preventDefault()
-  },
-  false
-)
+// -------ADD / REMOVE RIGHT CLICK MENU
+// document.addEventListener(
+//   'contextmenu',
+//   function (e) {
+//     e.preventDefault()
+//   },
+//   false
+// )
+
+// -------Clear the localStorage-------
+// localStorage.clear()
 
 var gGame = {
   isOn: false,
@@ -28,7 +33,10 @@ var gGame = {
   secsPasses: 0,
   points: 0,
   lifes: 3,
+  mode: 4,
 }
+
+var usersArr = []
 
 var gFirstClick = {}
 var gIDCell = 0
@@ -58,13 +66,16 @@ elSafeClicks.innerText = gSafeClick
 var emptyCells = []
 var newEmptyCells = []
 var gMines = []
+var gUserName = prompt('Enter your name')
 
 var gBoard = createBoard()
 renderBoard()
+renderBestPlayers(gLevel.SIZE)
 
 function clickedRadio(elRadio) {
   gLevel.SIZE = Number(elRadio.id)
   gLevel.MINES = Number(elRadio.value)
+  renderBestPlayers(gLevel.SIZE)
   gBoard = null
   resetGame()
 }
@@ -122,6 +133,268 @@ function renderBoard() {
   }
   var elCells = document.querySelector('.board-cells')
   elCells.innerHTML = strHTML
+}
+
+function renderBestPlayers(length) {
+  var elScoreBoard4 = document.querySelector('.mode4')
+  document.querySelector('.lsmode4').innerText = ''
+  var elScoreBoard8 = document.querySelector('.mode8')
+  document.querySelector('.lsmode8').innerText = ''
+  var elScoreBoard12 = document.querySelector('.mode12')
+  document.querySelector('.lsmode12').innerText = ''
+  switch (length) {
+    case 4:
+      elScoreBoard4.style.display = 'block'
+      elScoreBoard8.style.display = 'none'
+      elScoreBoard12.style.display = 'none'
+      for (var i = 0; i < localStorage.length; i++) {
+        var user = localStorage.getItem(localStorage.key(i))
+        var toObj = JSON.parse(user)
+        if (toObj.mode === 4) {
+          usersArr.push(toObj)
+          usersArr.sort(
+            (firstItem, secondItem) => firstItem.score - secondItem.score
+          )
+        }
+      }
+      if (usersArr.length >= 5) {
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥉 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `4. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `5. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 4) {
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥉 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `4. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 3) {
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥉 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 2) {
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 1) {
+        document.querySelector(
+          '.lsmode4'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else {
+        return
+      }
+      break
+    case 8:
+      elScoreBoard4.style.display = 'none'
+      elScoreBoard8.style.display = 'block'
+      elScoreBoard12.style.display = 'none'
+      for (var i = 0; i < localStorage.length; i++) {
+        var user = localStorage.getItem(localStorage.key(i))
+        var toObj = JSON.parse(user)
+        if (toObj.mode === 8) {
+          usersArr.push(toObj)
+          usersArr.sort(
+            (firstItem, secondItem) => firstItem.score - secondItem.score
+          )
+        }
+      }
+      if (usersArr.length >= 5) {
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥉 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `4. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `5. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 4) {
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥉 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `4. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 3) {
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥉 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 2) {
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 1) {
+        document.querySelector(
+          '.lsmode8'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else {
+        return
+      }
+      break
+    case 12:
+      elScoreBoard4.style.display = 'none'
+      elScoreBoard8.style.display = 'none'
+      elScoreBoard12.style.display = 'block'
+      for (var i = 0; i < localStorage.length; i++) {
+        var user = localStorage.getItem(localStorage.key(i))
+        var toObj = JSON.parse(user)
+        if (toObj.mode === 12) {
+          usersArr.push(toObj)
+          usersArr.sort(
+            (firstItem, secondItem) => firstItem.score - secondItem.score
+          )
+        }
+      }
+      if (usersArr.length >= 5) {
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥉 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `4. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `5. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 4) {
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥉 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `4. ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 3) {
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥉 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 2) {
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥈 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else if (usersArr.length === 1) {
+        document.querySelector(
+          '.lsmode12'
+        ).innerText += `🥇 ${usersArr[0].name} - ${usersArr[0].score}\n\n`
+        usersArr.shift()
+      } else {
+        return
+      }
+      break
+    default:
+      console.log('error')
+  }
 }
 
 function cellClicked(elCell, i, j, e) {
@@ -238,6 +511,15 @@ function checkWin() {
       elHeader.innerText = 'YOU WON'
       timeNum = 0
       WINMUSIC.play()
+      window.localStorage.setItem(
+        IDKey++,
+        JSON.stringify({
+          name: gUserName,
+          score: gGame.secsPasses,
+          mode: gGame.mode,
+        })
+      )
+      renderBestPlayers(gLevel.SIZE)
     } else {
       return
     }
@@ -304,6 +586,7 @@ function resetGame() {
     secsPasses: 0,
     points: 0,
     lifes: 3,
+    mode: gLevel.SIZE,
   }
   gFirstClick.length = 0
   timeNum = 0
@@ -320,4 +603,5 @@ function resetGame() {
   elSafeClicks.innerText = gSafeClick
   gBoard = createBoard()
   renderBoard()
+  gUserName = prompt('Enter your name')
 }
